@@ -1,11 +1,12 @@
-;;;; File that encapsulates the functions that run the model on each timestep of an experiment and collect the results
+(defvar *start-time*) ; Variable used to calculate the time taken by the model to take each decision
+(defvar *trial-time*) ; Variable that stores the total time taken by the model to take decisions during the trial
 
 (defparameter *run-model* t)
 
 ;; Function that sets up the window and displays the layout of a timestep
-(defun present-timestep (timestep &optional (new-window t))
+(defun present-timestep (timestep &key (new-window nil) (visible t))
   (let ((window (if new-window
-                    (open-exp-window "Jameson Experiment" :visible (timestep-visible timestep))
+                    (open-exp-window "Jameson Experiment" :visible visible)
                     nil)))
     
     (unless new-window
@@ -36,14 +37,13 @@
       (setf *trial-time* (+ *trial-time* timestep-time)))
     (move-jameson-on-decision *jameson* (string key))
     (when *timesteps*
-      (present-timestep (first *timesteps*) nil))))
+      (present-timestep (first *timesteps*)))))
 
 ;; Function that allows the window handler to run until results have been collected for all timesteps
-(defun collect-responses (timestep-count)
+(defun collect-responses (timestep-count visible)
   (setf *results* nil)
   (setf *trial-time* 0)
-  (let ((window (present-timestep (first *timesteps*))))
-    (if *run-model*
-      (run (* *max-response-time* timestep-count) :real-time (and *visible* *real-time*))
-      (while (null *results*)
-        (allow-event-manager window)))))
+  (let ((window (present-timestep (first *timesteps*) :new-window t :visible visible)))
+    (run (* *max-response-time* timestep-count) :real-time visible)
+    (while (null *results*)
+      (allow-event-manager window))))

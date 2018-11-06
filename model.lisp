@@ -1,5 +1,4 @@
-;;;; File that defines the ACT-R model of the program
-
+;;; Load files for the program
 ;; For the files to load correctly, the Lisp environment's load path must be set to the directory of the project
 (load (merge-pathnames "program.lisp" *load-truename*))
 

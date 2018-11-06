@@ -1,9 +1,7 @@
-;;;; File that encapsulates the functions about Jameson
-
 (defvar *jameson-speed-x* 0)  ; Variable that dictates how much Jameson's position along the x axis changes with each movement
 (defvar *jameson-speed-y* 50) ; Variable that dictates how much Jameson's position along the y axis changes with each movement
 
-;;; Class that defines the attributes and operations of Jameson
+;;; Class that defines the attributes of Jameson
 (defclass jameson ()
   ((id
     :initarg :id

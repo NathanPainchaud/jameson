@@ -1,12 +1,9 @@
-;;;; File that encapsulates the functions about individual projectiles and groups of projectiles
-
 (defvar *projectile-positions-y* '(50 100 150 200 250)) ; List of possible starting points for projectiles along the vertical axis
 (defvar *projectile-position-x* 50) ; Position on th x axis at which all projectiles initially start
 
 (defvar *projectile-speed-x* 50) ; Variable that dictates how much a projectile's position along the x axis changes at each timestep
 (defvar *projectile-speed-y* 0)  ; Variable that dictates how much a projectile's position along the y axis changes at each timestep
 
-;;; Class that defines the attributes and operations of a single projectile
 (defclass projectile ()
   ((id
     :initarg :id
