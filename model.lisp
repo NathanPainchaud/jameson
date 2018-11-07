@@ -6,7 +6,7 @@
 
 (define-model jameson
 
-(sgp :v t :esc t :lf 0.4 :bll 0.5 :ans 0.5 :rt 0 :ncnar nil)
+(sgp :v nil :esc t :lf 0.4 :bll 0.5 :ans 0.5 :rt 0 :ncnar nil)
 
 (sgp :show-focus t)
 
