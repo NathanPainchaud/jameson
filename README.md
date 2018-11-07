@@ -30,7 +30,7 @@ Depending on which of the two functions the user calls, the program can run for 
 
 To execute a single trial, simply call the function `jameson-trial`.
 
-The `jameson-trial` function can be run without specifying any parameters. However, it allows for two named parameters, described below:
+The `jameson-trial` function can be run without specifying any parameters. However, it allows for two optional named parameters, described below:
 - `visible` (optional, default `t`) Indicates to display a window (`t`) or not (`nil`) when running an experiment. This parameter also affects the execution time of the program. When a window is displayed, experiments are run in real-time, while they are run in the simulated time of the ACT-R model otherwise.
 - `projectiles-nb` (optional, default `1`) The number of projectiles directed at Jameson at each trial.
 
@@ -42,12 +42,13 @@ When specifying values for the parameters, a call to the `jameson-trial` functio
 ### Execute multiple trials
 To execute multiple trials, simply call the function `jameson`.
 
-The `jameson` function takes a minimum of one parameter to run. However, it allows for two more named parameters. All parameters are described below:
+The `jameson` function takes a minimum of one parameter to run. However, it allows for three more optional named parameters. All parameters are described below:
 - `n` (required) The number of trials to run in the experiment.
 - `visible` (optional, default `nil`) Indicates to display a window (`t`) or not (`nil`) when running an experiment. This parameter also affects the execution time of the program. When a window is displayed, experiments are run in real-time, while they are run in the simulated time of the ACT-R model otherwise.
 - `projectiles-nb` (optional, default `1`) The number of projectiles directed at Jameson at each trial.
+- `results-group-size` (optional, default `10`) When displaying the results of multiple trials, statistics are computed over groups of trials rather than individual trials to avoid overcrowding the output stream. This argument dictates the size of the groups over which to compute the statistics (it is suggested to increase the value when running a large numbers of trials).
 
 When specifying values for the parameters, a call to the `jameson` function for 100 trials with the default values would look like this:
 ```lisp
-(jameson 100 :visible nil :projectiles-nb 1)
+(jameson 100 :visible nil :projectiles-nb 1 :results-group-size 10)
 ```

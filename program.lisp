@@ -16,6 +16,7 @@
 ;;; Definition of custom data structures used by the program
 (defstruct timestep order-in-trial projectiles) ; Custom data structure to hold the information about the displa of a specific timestep in the experiment
 (defstruct result hit time)                     ; Custom data structure to hold the results compute for each trial (on the last timestep of each trial)
+(defstruct result-group start-trial end-trial hits time)  ; Custom data structure to hold the results of a group of trials (useful when displaying the results)
 
 ;;; Load files for the program
 ;; For the files to load correctly, the Lisp environment's load path must be set to the directory of the project
@@ -33,16 +34,15 @@
 (defun jameson-trial (&key (visible t) (projectiles-nb 1))
   (setf *jameson* (make-instance 'jameson))
   (setf *timesteps* (create-trial projectiles-nb *timesteps-by-trial*))
-  (collect-responses *timesteps-by-trial* visible)
-  (analyze-results))
+  (collect-responses *timesteps-by-trial* visible))
 
 ;; Function callable by a user of the model that runs a number of trials
 ;; The model is not reset between trials so that it can learn
 ;; A trial is defined as an experiment that lasts from the generation of the projectiles to the projectiles intersecting with Jameson's movement axis
-(defun jameson (n &key (visible nil) (projectiles-nb 1))
+(defun jameson (n &key (visible nil) (projectiles-nb 1) (results-group-size 10))
   (setf *jameson* (make-instance 'jameson))
   (setf *timesteps* nil)
   (dotimes (i n)
     (setf *timesteps* (append *timesteps* (create-trial projectiles-nb *timesteps-by-trial*))))
   (collect-responses (* *timesteps-by-trial* n) visible)
-  (analyze-results))
+  (analyze-results results-group-size))
