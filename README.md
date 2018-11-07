@@ -1,6 +1,6 @@
 # Jameson
 
-## Program files
+## Program structure
 
 The program is split across multiple files, with the name and purpose of each file listed here:
 
@@ -12,16 +12,19 @@ The program is split across multiple files, with the name and purpose of each fi
 - `experiment-loop.lisp` Functions that run the model on each timestep of an experiment and collect the results.
 - `results.lisp` Functions that analyze and display results of experiments.
 
-For the files to load properly, it is important that the load path of the Lisp used includes the directory of the project, because the files look for each other in the current directory.
+## Loading the ACT-R model
 
-## Execution and configuration
+The file that defines the ACT-R model, and the one that needs to be loaded in the ACT-R environment to run experiments, is the `model.lisp` file.
+
+The user need not bother himself with the other files, as `model.lisp` will take care internally of loading the files necessary to its execution. However, for `model.lisp` to be able to load files properly, it is important that the load path of the Lisp used includes the directory of the project; the path used for loading files are relative and search in the current directory.
+
+## Running experiments
 
 Once the Lisp is properly configured and the model is loaded, two functions defined in the program are designed to be called by the user.
 
 For the sake of clarity, we will define a trial as _an experiment that lasts from the generation of the projectiles to the projectiles intersecting with Jameson's movement axis_.
 
 Depending on which of the two functions the user calls, the program can run for a single trial or multiptle trials.
-
 
 ### Execute a single trial
 
@@ -35,7 +38,6 @@ When specifying values for the parameters, a call to the `jameson-trial` functio
 ```lisp
 (jameson-trial :visible t :projectiles-nb 1)
 ```
-
 
 ### Execute multiple trials
 To execute multiple trials, simply call the function `jameson`.
