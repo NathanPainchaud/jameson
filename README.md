@@ -54,3 +54,10 @@ When specifying values for the parameters, a call to the `jameson` function for 
 ```lisp
 (jameson 100 :visible nil :projectiles-nb 1 :results-group-size 10)
 ```
+
+# Model - technical elements
+
+## Parameter values (sgp ...)
+:v [nil|t] - sets the verbose mode
+
+
