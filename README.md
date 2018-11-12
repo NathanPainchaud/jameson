@@ -86,3 +86,6 @@ The idea is to use unit 2's code to detect & encode projectiles posisitions.
 ## Can't launch additional runs
 I ran the model a few times without issue (both with/without the window). After some launches, it seems I couldn't do additional runs. I just seemed to remain frozen after (jameson ....). I had to fully restart, including ACT-R. Not sure what caused it. I was playing with the model.lisp file but I'm pretty much I tried to run it with the default version on Git and it still hung.
 - It may be that I somehow didn't shut it down properly and for some reason ACT-r couldn't restart it
+
+## Jameson see himself
+- If you launch the simulation with the attention now included and the focus being in the screen on the subjet of the current focus, as per labo 2, sometimes Jameson will see and focus on himself. This happens right after the projectile has arrived at the end of the frame on the right. It doesn't happen everytime.
