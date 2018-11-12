@@ -69,7 +69,20 @@ When specifying values for the parameters, a call to the `jameson` function for 
 :show-focus t - circles stuff in-focus on the window. Useful if using the UI for debugging
 :trace-detail [low|medium|high] - how much stuff to print on screen, default medium
 
-## Motor-perceptual elements
+## Model run - a high-level view of what happens
+- The program is run, displaying J (jameson) and 0 (a projectile)
+- Initially, (P attend...) will be selected. It activates the visual-location module.
+- This modules detects "a thing", produces a chunk: visual-location-0-0 with base infos about the "thing". This is where we would want to move-attention
+- Once that is treated, the goal has been changed to attending state
+- The (P respond...) is then launched. It's role is essentially to move the projectile forward. So whatever we do in terms of other production, at some point we would need to get to that production firing to move the projectile along.
+- A press-key command is "simulated" by the production. That key is a cue for the program (the lisp program that runs the simulation) to move the projectile forward to the next location.
+- The goal is cleared. We return to the initial attending state.
+- Since the projectile has moved, we can now re-attend that new position and we go back to the first steps. A visual-location-2-0-0 chunk will be added to the DM with the new position details
+
+## Visual  elements
 The idea is to use unit 2's code to detect & encode projectiles posisitions.
 
-
+# Bugs
+## Can't launch additional runs
+I ran the model a few times without issue (both with/without the window). After some launches, it seems I couldn't do additional runs. I just seemed to remain frozen after (jameson ....). I had to fully restart, including ACT-R. Not sure what caused it. I was playing with the model.lisp file but I'm pretty much I tried to run it with the default version on Git and it still hung.
+- It may be that I somehow didn't shut it down properly and for some reason ACT-r couldn't restart it
