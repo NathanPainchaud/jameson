@@ -69,6 +69,7 @@ When specifying values for the parameters, a call to the `jameson` function for 
 :show-focus t - circles stuff in-focus on the window. Useful if using the UI for debugging
 :trace-detail [low|medium|high] - how much stuff to print on screen, default medium
 
-
+## Motor-perceptual elements
+The idea is to use unit 2's code to detect & encode projectiles posisitions.
 
 
