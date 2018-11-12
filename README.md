@@ -18,6 +18,8 @@ The file that defines the ACT-R model, and the one that needs to be loaded in th
 
 The user need not bother himself with the other files, as `model.lisp` will take care internally of loading the files necessary to its execution. However, for `model.lisp` to be able to load files properly, it is important that the load path of the Lisp used includes the directory of the project; the path used for loading files are relative and search in the current directory.
 
+For example, if you typically start actr with something like (Closure)`ccl -l load-act-r.lisp `, you could just add a `/jameson` folder from that directory and pull the git there. Then Load Model from the GUI or cmd line.
+
 ## Running experiments
 
 Once the Lisp is properly configured and the model is loaded, two functions defined in the program are designed to be called by the user.
