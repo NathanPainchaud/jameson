@@ -58,6 +58,17 @@ When specifying values for the parameters, a call to the `jameson` function for 
 # Model - technical elements
 
 ## Parameter values (sgp ...)
-:v [nil|t] - sets the verbose mode
+:v [nil|t]  - sets the verbose mode
+:esc t      - sets subsymbolic computations
+:lf 0.4     - latency factor (default 1.0)
+:bll 0.5    - base level learning (default 0.5)
+:ans 0.5    - activation noise (.e.g instantaneous noise)
+:rt 0.0     - retrieval treshold (chunks) (default 0.0
+:ncnar nil  - normalize chunk names (for new chunks created by program I guess)
+:needs-mouse nil - 
+:show-focus t - circles stuff in-focus on the window. Useful if using the UI for debugging
+:trace-detail [low|medium|high] - how much stuff to print on screen, default medium
+
+
 
 
