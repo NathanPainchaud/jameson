@@ -6,35 +6,26 @@
 
 (define-model jameson
 
-(sgp :v nil :esc t :lf 0.4 :bll 0.5 :ans 0.5 :rt 0 :ncnar nil)
+(sgp :v t :esc nil :lf 0.4 :bll 0.5 :ans 0.5 :rt 0 :ncnar nil :show-focus t :trace-detail low)
 
-(sgp :show-focus t)
+  
+;; PRODUCTIONS - let's try to keep them organized
+;; GENERAL
 
 (chunk-type position position-x position-y)
 (chunk-type trajectory position1 position2 position3 course)
 (chunk-type projectile id trajectory)
-(chunk-type goal state)
+(chunk-type goal state tracked pos-x pos-y)
 
 (add-dm
   (goal isa goal)
-  (attending))
+  (attending)(attended))
 
-(P attend
-   =goal>
-      ISA         goal
-      state       nil
-   =visual-location>
-   ?visual>
-       state      free
-==>
-   =goal>
-      state       attending
-)
 
 (P respond
    =goal>
       ISA         goal
-      state       attending
+      state       done
    ?manual>
      state        free
 ==>
@@ -43,6 +34,41 @@
       cmd         press-key
       key         "s"
 )
+
+;; VISUAL-MODULE PRODUCTION
+
+(P attend-projectile
+   =goal>
+      ISA         goal
+      state       nil
+   =visual-location>
+   		screen-x				=pos-x
+   		screen-y				=pos-y
+   ?visual>
+      state       free
+==>
+   +visual>
+      cmd         move-attention
+      screen-pos  =visual-location
+   =goal>
+      state       attended
+      pos-x				=pos-x
+      pos-y 			=pos-y
+
+)
+
+(P encode-projectile
+   =goal>
+      ISA         goal
+      state       attended
+   =visual>
+      value       =letter
+==>
+   =goal>
+      state       done
+      tracked			=letter
+)
+
 
 (set-all-base-levels 100000 -1000)
 (goal-focus goal)
