@@ -82,6 +82,20 @@ When specifying values for the parameters, a call to the `jameson` function for 
 ## Visual  elements
 The idea is to use unit 2's code to detect & encode projectiles posisitions.
 
+## Managing rewards
+
+For the utility values of each production, rewards are going to be used to manage learning. A reward is a value propagated to all production rules fired since the last time a reward was launched. It updates the value of each production individually. There are 2 main avenues to implement this - the PRODUCTION or EVENT approach.
+
+PRODUCTION approach: this means that within a production rule, we will need a left-hand side series of tests that determine when it is appropriate to launch a reward (e.g. at the end of each trial, once we know if we've been hit or not). To do this, a trigger-reward function can be used. The value is to be determined depending on parameters of the model (e.g. should be consistant with base activation values, amount of noise, etc.):
+- (trigger-reward rewardvalue)
+
+However rewardvalue must depends on whether or not we've been hit during this trial. This is determined by jameson-is-hit in jameson.lsip. We would need to access that function from the production rule for this approach to work.
+
+EVEN approach: this would mean triggering an event from within jameson-is-hit.lisp. We know this is called at the end of each trial run. In this case, we could use something like:
+- (schedule-event-relative 0 :action trigger-reward :params reward-value)
+
+This would launch immediately (0) the action trigger-rewards with a reward-value parameter. Since we' already in jameson-is-hit() we know if the results should be positive or not. This syntax isn't tested at the moment and may be slightly wrong.
+
 # Bugs
 ## Can't launch additional runs
 I ran the model a few times without issue (both with/without the window). After some launches, it seems I couldn't do additional runs. I just seemed to remain frozen after (jameson ....). I had to fully restart, including ACT-R. Not sure what caused it. I was playing with the model.lisp file but I'm pretty much I tried to run it with the default version on Git and it still hung.
