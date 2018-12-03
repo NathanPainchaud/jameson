@@ -12,19 +12,18 @@
 ;; PRODUCTIONS - let's try to keep them organized
 ;; GENERAL
 
-(chunk-type position position-x position-y)
-(chunk-type trajectory position1 position2 position3 course)
+(chunk-type position pos-x pos-y)
+(chunk-type trajectory position1 position2 position3 course state)
 (chunk-type projectile id trajectory)
-(chunk-type goal state tracked pos-x pos-y)
+(chunk-type goal state dummy)
 
 (add-dm
-  (goal isa goal)
-  (attending)(attended))
+  (goal isa trajectory)(attended)(attending)(done))
 
 
 (P respond
    =goal>
-      ISA         goal
+      ISA         trajectory
       state       done
    ?manual>
      state        free
@@ -39,7 +38,7 @@
 
 (P attend-projectile
    =goal>
-      ISA         goal
+      ISA         trajectory
       state       nil
    =visual-location>
    		screen-x				=pos-x
@@ -52,21 +51,17 @@
       screen-pos  =visual-location
    =goal>
       state       attended
-      pos-x				=pos-x
-      pos-y 			=pos-y
-
 )
 
 (P encode-projectile
    =goal>
-      ISA         goal
+      ISA         trajectory
       state       attended
    =visual>
       value       =letter
 ==>
    =goal>
       state       done
-      tracked			=letter
 )
 
 

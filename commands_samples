@@ -1,0 +1,2 @@
+(jameson 5 :visible nil :projectiles-nb 1)
+(jameson-trial :visible t :projectiles-nb 1)
