@@ -33,8 +33,8 @@ Depending on which of the two functions the user calls, the program can run for 
 To execute a single trial, simply call the function `jameson-trial`.
 
 The `jameson-trial` function can be run without specifying any parameters. However, it allows for two optional named parameters, described below:
-- `visible` (optional, default `t`) Indicates to display a window (`t`) or not (`nil`) when running an experiment. This parameter also affects the execution time of the program. When a window is displayed, experiments are run in real-time, while they are run in the simulated time of the ACT-R model otherwise.
-- `projectiles-nb` (optional, default `1`) The number of projectiles directed at Jameson at each trial.
+- `visible` (optional, default `t`) <br/> Indicates to display a window (`t`) or not (`nil`) when running an experiment. This parameter also affects the execution time of the program. When a window is displayed, experiments are run in real-time, while they are run in the simulated time of the ACT-R model otherwise.
+- `projectiles-nb` (optional, default `1`) <br/> The number of projectiles directed at Jameson at each trial.
 
 When specifying values for the parameters, a call to the `jameson-trial` function with the default values would look like this:
 ```lisp
@@ -45,47 +45,26 @@ When specifying values for the parameters, a call to the `jameson-trial` functio
 To execute multiple trials, simply call the function `jameson`.
 
 The `jameson` function takes a minimum of one parameter to run. However, it allows for three more optional named parameters. All parameters are described below:
-- `n` (required) The number of trials to run in the experiment.
-- `visible` (optional, default `nil`) Indicates to display a window (`t`) or not (`nil`) when running an experiment. This parameter also affects the execution time of the program. When a window is displayed, experiments are run in real-time, while they are run in the simulated time of the ACT-R model otherwise.
-- `projectiles-nb` (optional, default `1`) The number of projectiles directed at Jameson at each trial.
-- `results-group-size` (optional, default `10`) When displaying the results of multiple trials, statistics are computed over groups of trials rather than individual trials to avoid overcrowding the output stream. This argument dictates the size of the groups over which to compute the statistics (it is suggested to increase the value when running a large numbers of trials).
+- `n` (required) <br/> The number of trials to run in the experiment.
+- `visible` (optional, default `nil`) <br/> Indicates to display a window (`t`) or not (`nil`) when running an experiment. This parameter also affects the execution time of the program. When a window is displayed, experiments are run in real-time, while they are run in the simulated time of the ACT-R model otherwise.
+- `projectiles-nb` (optional, default `1`) <br/> The number of projectiles directed at Jameson at each trial.
+- `results-group-size` (optional, default `10`) <br/> When displaying the results of multiple trials, statistics are computed over groups of trials rather than individual trials to avoid overcrowding the output stream. This argument dictates the size of the groups over which to compute the statistics (it is suggested to increase the value when running a large numbers of trials).
 
 When specifying values for the parameters, a call to the `jameson` function for 100 trials with the default values would look like this:
 ```lisp
 (jameson 100 :visible nil :projectiles-nb 1 :results-group-size 10)
 ```
 
-# Model - technical elements
+## ACT-R Model
 
-## Parameter values (sgp ...)
-:v [nil|t]  - sets the verbose mode
-:esc t      - sets subsymbolic computations
-:lf 0.4     - latency factor (default 1.0)
-:bll 0.5    - base level learning (default 0.5)
-:ans 0.5    - activation noise (.e.g instantaneous noise)
-:rt 0.0     - retrieval treshold (chunks) (default 0.0
-:ncnar nil  - normalize chunk names (for new chunks created by program I guess)
-:needs-mouse nil - 
-:show-focus t - circles stuff in-focus on the window. Useful if using the UI for debugging
-:trace-detail [low|medium|high] - how much stuff to print on screen, default medium
-
-## Model run - a high-level view of what happens
-- The program is run, displaying J (jameson) and 0 (a projectile)
-- Initially, (P attend...) will be selected. It activates the visual-location module.
-- This modules detects "a thing", produces a chunk: visual-location-0-0 with base infos about the "thing". This is where we would want to move-attention
-- Once that is treated, the goal has been changed to attending state
-- The (P respond...) is then launched. It's role is essentially to move the projectile forward. So whatever we do in terms of other production, at some point we would need to get to that production firing to move the projectile along.
-- A press-key command is "simulated" by the production. That key is a cue for the program (the lisp program that runs the simulation) to move the projectile forward to the next location.
-- The goal is cleared. We return to the initial attending state.
-- Since the projectile has moved, we can now re-attend that new position and we go back to the first steps. A visual-location-2-0-0 chunk will be added to the DM with the new position details
-
-## Visual  elements
-The idea is to use unit 2's code to detect & encode projectiles posisitions.
-
-# Bugs
-## Can't launch additional runs
-I ran the model a few times without issue (both with/without the window). After some launches, it seems I couldn't do additional runs. I just seemed to remain frozen after (jameson ....). I had to fully restart, including ACT-R. Not sure what caused it. I was playing with the model.lisp file but I'm pretty much I tried to run it with the default version on Git and it still hung.
-- It may be that I somehow didn't shut it down properly and for some reason ACT-r couldn't restart it
-
-## Jameson see himself
-- If you launch the simulation with the attention now included and the focus being in the screen on the subjet of the current focus, as per labo 2, sometimes Jameson will see and focus on himself. This happens right after the projectile has arrived at the end of the frame on the right. It doesn't happen everytime.
+### Parameter values (sgp ...)
+- `v` (`nil`|`t`) <br/> Sets the verbose mode (whether to display a trace or not).
+- `esc` (required `t`) <br/> Sets subsymbolic computations.
+- `lf` (default `1.0`, recommended `0.4`) <br/> Sets Latency Factor.
+- `bll` (default `0.5`) <br/> Sets Base Level Learning.
+- `ans` (recommended `0.5`) <br/> Sets Activation NoiSe (.e.g instantaneous noise).
+- `rt` (default `0.0`) <br/> Sets Retrieval Treshold for the chunks in declarative memory.
+- `ncnar` (default `nil`) <br/> Sets chunk names normalization.
+- `needs-mouse` (recommended `nil`)
+- `show-focus` (recommended `t`) <br/> Sets whether to display the region of the window the ACT-R model is currently attending.
+- `trace-detail` (`low`|`medium`|`high`, default `medium`) <br/> Sets the level of detail in the trace detailing the execution of the ACT-R model.
