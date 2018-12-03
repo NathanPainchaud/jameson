@@ -87,6 +87,8 @@
    	+manual>
   		cmd       	  press-key
   		key       	  "s"
+  	+imaginal>
+  	
 )
 (P encode-trajectory-two
 		=goal>
@@ -124,14 +126,18 @@
    	+manual>
   		cmd    	     press-key
   		key    	     "s"
+  	+imaginal>
+  	
 )
 (P estimate-course
 		=goal>
 			isa						trajectory
 			encode-state	estimation			
 ==>
-		!output!				"do stuff - here. Clearing buffers for now."
-		+goal>
+		!output!				"do stuff here."
+		=goal>
+			encode-state	stopped
+			state					stopped
 
 )
 		
