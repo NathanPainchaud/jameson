@@ -12,13 +12,13 @@
 ;; PRODUCTIONS - let's try to keep them organized
 ;; GENERAL
 
-(chunk-type position pos-x pos-y)
-(chunk-type trajectory position1 position2 position3 course state)
+(chunk-type position pos-xy)
+(chunk-type trajectory position1 position2 position3 course state encode-state)
 (chunk-type projectile id trajectory)
-(chunk-type goal state dummy)
 
 (add-dm
-  (goal isa trajectory)(attended)(attending)(done))
+  (goal isa trajectory)(attended)(attending)(done)(pos-encoded)
+  (pos1-encoded)(pos2-encoded)(pos3-encoded)(estimation))
 
 
 (P respond
@@ -39,7 +39,7 @@
 (P attend-projectile
    =goal>
       ISA         trajectory
-      state       nil
+			state				nil
    =visual-location>
    		screen-x				=pos-x
    		screen-y				=pos-y
@@ -53,17 +53,90 @@
       state       attended
 )
 
-(P encode-projectile
+(P encode-position
    =goal>
       ISA         trajectory
-      state       attended
+      state				attended
+   ?imaginal>
+   		state				free
    =visual>
-      value       =letter
+   		ISA					visual-object
+      SCREEN-POS	=pos
 ==>
-   =goal>
-      state       done
+   +imaginal>
+      isa         position
+			pos-xy			=pos
+	=goal>
+		state					nil
 )
 
+(P encode-trajectory-one
+		=goal>
+			isa						trajectory
+			state					nil
+			encode-state	nil
+		?imaginal>
+			buffer				full
+		=imaginal>
+		?manual>
+			state					free
+==>
+		=goal>
+			position1			=imaginal
+			encode-state	pos1-encoded
+   	+manual>
+  		cmd       	  press-key
+  		key       	  "s"
+)
+(P encode-trajectory-two
+		=goal>
+			isa						trajectory
+			state					nil
+			encode-state	pos1-encoded
+		?imaginal>
+			buffer				full
+		=imaginal>
+		?manual>
+			state					free
+==>
+		=goal>
+			position2			=imaginal
+			encode-state	pos2-encoded
+		+imaginal>
+   	+manual>
+  		cmd       	  press-key
+  		key       	  "s"
+)
+(P encode-trajectory-three
+		=goal>
+			isa						trajectory
+			encode-state	pos2-encoded
+			state					nil
+		?imaginal>
+			buffer 				full
+		=imaginal>
+		?manual>
+			state 				free
+==>
+		=goal>
+			position3		  =imaginal
+			encode-state  estimation
+   	+manual>
+  		cmd    	     press-key
+  		key    	     "s"
+)
+(P estimate-course
+		=goal>
+			isa						trajectory
+			encode-state	estimation			
+==>
+		!output!				"do stuff - here. Clearing buffers for now."
+		+goal>
+
+)
+		
+			
+			
 
 (set-all-base-levels 100000 -1000)
 (goal-focus goal)
