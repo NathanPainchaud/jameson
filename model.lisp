@@ -12,7 +12,7 @@
 ;; PRODUCTIONS - let's try to keep them organized
 ;; GENERAL
 
-(chunk-type position pos-xy)
+(chunk-type position posx posy)
 (chunk-type trajectory position1 position2 position3 course state encode-state)
 (chunk-type projectile id trajectory)
 
@@ -45,30 +45,21 @@
    		screen-y				=pos-y
    ?visual>
       state       free
+   ?imaginal>
+   		state				free
+   
 ==>
    +visual>
       cmd         move-attention
       screen-pos  =visual-location
    =goal>
-      state       attended
+      state       nil
+   +imaginal>
+   		isa					position
+   		posx				=pos-x
+   		posy				=pos-y
 )
 
-(P encode-position
-   =goal>
-      ISA         trajectory
-      state				attended
-   ?imaginal>
-   		state				free
-   =visual>
-   		ISA					visual-object
-      SCREEN-POS	=pos
-==>
-   +imaginal>
-      isa         position
-			pos-xy			=pos
-	=goal>
-		state					nil
-)
 
 (P encode-trajectory-one
 		=goal>
@@ -132,15 +123,29 @@
 (P estimate-course
 		=goal>
 			isa						trajectory
-			encode-state	estimation			
+			encode-state	estimation		
+			position1			=p1
+
 ==>
-		!output!				"do stuff here."
+		!output!				"Estimating trajectory"
 		=goal>
-			encode-state	stopped
-			state					stopped
+			encode-state	estimate
+			state					estimate
+		+retrieval>
+			isa						position
+			pos-xy				=p1
+)
+(P estimate-course-2
+		=goal>
+			isa						trajectory
+			encode-state	estimation		
+			state					estimation
+		=retrieval>
+			state					full
+==>
+		!output!				"Estimating trajectory"
 
 )
-		
 			
 			
 
