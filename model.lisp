@@ -21,18 +21,6 @@
   (pos1-encoded)(pos2-encoded)(pos3-encoded)(estimation))
 
 
-(P respond
-   =goal>
-      ISA         trajectory
-      state       done
-   ?manual>
-     state        free
-==>
-   +goal>
-   +manual>
-      cmd         press-key
-      key         "s"
-)
 
 ;; VISUAL-MODULE PRODUCTION
 
@@ -64,7 +52,6 @@
 (P encode-trajectory-one
 		=goal>
 			isa						trajectory
-			state					nil
 			encode-state	nil
 		?imaginal>
 			buffer				full
@@ -84,7 +71,6 @@
 (P encode-trajectory-two
 		=goal>
 			isa						trajectory
-			state					nil
 			encode-state	pos1-encoded
 		?imaginal>
 			buffer				full
@@ -104,7 +90,6 @@
 		=goal>
 			isa						trajectory
 			encode-state	pos2-encoded
-			state					nil
 		?imaginal>
 			buffer 				full
 		=imaginal>
@@ -125,27 +110,15 @@
 			isa						trajectory
 			encode-state	estimation		
 			position1			=p1
-
 ==>
 		!output!				"Estimating trajectory"
 		=goal>
 			encode-state	estimate
-			state					estimate
 		+retrieval>
 			isa						position
 			pos-xy				=p1
 )
-(P estimate-course-2
-		=goal>
-			isa						trajectory
-			encode-state	estimation		
-			state					estimation
-		=retrieval>
-			state					full
-==>
-		!output!				"Estimating trajectory"
 
-)
 			
 			
 
