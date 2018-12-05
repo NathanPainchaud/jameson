@@ -176,9 +176,9 @@ state jameson-encoded projectile-encoded)
 		- oldest-position		nil
 ==>
 		=goal>
+			state							estimating
 			jameson-encoded		nil
 			projectile-encoded	nil
-			state							estimating
 		+imaginal>)
 
 
@@ -190,10 +190,8 @@ state jameson-encoded projectile-encoded)
 		?manual>
 			state							free
 ==>
-		!output!						"Estimating trajectory"
 		=goal>
-			state							nil
-			jameson-position	nil
+			state							start
 		+manual>
   		cmd								press-key
   		key								"s")
