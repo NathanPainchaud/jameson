@@ -22,12 +22,14 @@
 
     (setf *start-time* (get-time *run-model*))))
 
-; Function that calls the model with the results of the trial to allow the model to learn from them
+;; Function that calls the model with the results of the trial to allow the model to learn from them
 (defun show-model-results (results)
   (if (result-hit results)
     (mod-focus-fct `(state ,'results result ,"hit"))
     (mod-focus-fct `(state ,'results result ,"not-hit"))))
 
+;; Function that updates the environment, the statistics and the model himself according
+;; to the response of the model to a timestep
 (defun handle-response (timestep action)
   (let ((timestep-time (/ (- (get-time *run-model*) *start-time*) 1000.0)))
     (if (= (timestep-order-in-trial timestep) (1- *timesteps-by-trial*))
@@ -47,7 +49,7 @@
 (defmethod rpm-window-key-event-handler ((win rpm-window) key)
   (handle-response (first *timesteps*) (string key)))
 
-;; Function that allows the window handler to run until results have been collected for all timesteps
+;; Function that runs the model for each timestep to collect the responses of the model
 (defun collect-responses (timestep-count visible)
   (setf *results* nil)
   (setf *trial-time* 0)
