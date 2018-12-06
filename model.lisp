@@ -11,9 +11,12 @@
 
 ;; Chunk types definitions
 (chunk-type position pos-x pos-y)
-(chunk-type environment jameson-position oldest-position middle-position newest-position
-state jameson-encoded projectile-encoded)
-(chunk-type estimate dx dy y action)
+(chunk-type environment
+	jameson-position-x jameson-position-y
+	oldest-position-x oldest-position-y
+	middle-position-x middle-position-y 
+	newest-position-x newest-position-y state)
+(chunk-type estimate jameson-position-y dx dy y action state)
 
 ;; Declarative memory initialization
 (add-dm
@@ -86,10 +89,13 @@ state jameson-encoded projectile-encoded)
 		?imaginal>
 			buffer						full
 		=imaginal>
-==>
+			pos-x 	=x
+			pos-y 	=y
+==>			
 		=goal>
 			state							start
-			jameson-position	=imaginal
+			jameson-position-x	=x
+			jameson-position-y	=y
 			jameson-encoded		done)
 
 ; Adds a position to the projectile's trajectory when the
@@ -98,18 +104,26 @@ state jameson-encoded projectile-encoded)
 		=goal>
 			isa								environment
 			state							encoding-projectile
-			middle-position		=middle-position
-			newest-position		=newest-position
+			middle-position-x		=middle-position-x
+			middle-position-y		=middle-position-y
+			newest-position-x		=newest-position-x
+			newest-position-y		=newest-position-y
+
 		?imaginal>
 			buffer						full
 		=imaginal>
+			pos-x 	=x
+			pos-y 	=y
 ==>
 		=goal>
 			state							start
 			projectile-encoded	done
-			oldest-position		=middle-position
-			middle-position		=newest-position
-			newest-position		=imaginal)
+			oldest-position-x		=middle-position-x
+			oldest-position-y		=middle-position-y
+			middle-position-x		=newest-position-x
+			middle-position-y		=newest-position-y
+			newest-position-x		=x
+			newest-position-y		=y)
 
 ; Adds a position to the projectile's trajectory when the
 ; position for previous timestep is known
@@ -117,17 +131,23 @@ state jameson-encoded projectile-encoded)
 		=goal>
 			isa								environment
 			state							encoding-projectile
-			middle-position		nil
-			newest-position		=newest-position
+			middle-position-x		nil
+			middle-position-y		nil
+			newest-position-x		=newest-position-x
+			newest-position-y		=newest-position-y
 		?imaginal>
 			buffer						full
 		=imaginal>
+			pos-x 	=x
+			pos-y 	=y
 ==>
 		=goal>
 			state							start
 			projectile-encoded	done
-			middle-position		=newest-position
-			newest-position		=imaginal)
+			middle-position-x		=newest-position-x
+			middle-position-y		=newest-position-y
+			newest-position-x		=x
+			newest-position-y		=y)
 
 ; Adds a position to the projectile's trajectory when no
 ; previous positions are known
@@ -135,15 +155,19 @@ state jameson-encoded projectile-encoded)
 		=goal>
 			isa								environment
 			state							encoding-projectile
-			newest-position		nil
+			newest-position-x		nil
+			newest-position-y		nil
 		?imaginal>
 			buffer						full
 		=imaginal>
+			pos-x 	=x
+			pos-y 	=y
 ==>
 		=goal>
 			state							start
 			projectile-encoded	done
-			newest-position		=imaginal)
+			newest-position-x		=x
+			newest-position-y		=y)
 
 ; Stops the model from progressing if it does not have
 ; enough information to guess the behavior of the projectile
@@ -153,7 +177,8 @@ state jameson-encoded projectile-encoded)
 			state							start
 			jameson-encoded		done
 			projectile-encoded	done
-		  oldest-position		nil
+		  	oldest-position-x		nil
+		  	oldest-position-y		nil
 		?manual>
 			state							free
 ==>
@@ -161,8 +186,8 @@ state jameson-encoded projectile-encoded)
 			jameson-encoded		nil
 			projectile-encoded	nil
 		+manual>
-  		cmd								press-key
-  		key								"s"
+	  		cmd								press-key
+	  		key								"s"
 		+imaginal>)
 
 ; Allows the model to progress if it has enough information
@@ -173,12 +198,13 @@ state jameson-encoded projectile-encoded)
 			state							start
 			jameson-encoded		done
 			projectile-encoded	done
-		- oldest-position		nil
+		- oldest-position-x		nil
+		- oldest-position-y		nil
 ==>
 		=goal>
+			state							estimating
 			jameson-encoded		nil
 			projectile-encoded	nil
-			state							estimating
 		+imaginal>)
 
 
@@ -187,22 +213,27 @@ state jameson-encoded projectile-encoded)
 		=goal>
 			isa         			environment
 			state							estimating
-			jameson-position			=j
-			middle-position				=p2
-			newest-position				=p3
+			jameson-position-y			=j-y
+			middle-position-x			=p2-x
+			middle-position-y			=p2-y
+			newest-position-x			=p3-x
+			newest-position-y			=p3-y
 		?manual>
 			state							free
-			
 		
 ==>
 		!output!						"Estimating trajectory"
-		!bind!	=x3	(chunk-slot-value =p3 'pos-x)
 		
+		!bind! =deltaX (- =p3-x =p2-x)
+		!bind! =deltaY (- =p3-y =p2-y)
 		=goal>
+			isa				estimate
 			state							nil
-			jameson-position	nil
-		+imaginal>
-			x =x3
+			jameson-position-y	nil
+			dx =deltaX
+			dy =deltaY 
+			y =j-y
+					
 		+manual>
 			cmd								press-key
 			key								"s")
