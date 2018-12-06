@@ -323,7 +323,7 @@
       projectile-position    =position
       projectile-direction   =direction
       action                 =action
-      result                 "no-hit"
+      result                 "not-hit"
     ?imaginal>
        state                 free
 ==>

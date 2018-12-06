@@ -35,7 +35,6 @@
 ;; The model is not reset between trials so that it can learn
 ;; A trial is defined as an experiment that lasts from the generation of the projectiles to the projectiles intersecting with Jameson's movement axis
 (defun jameson-trial (&key (visible t) (projectiles-nb 1))
-  (setf *jameson* (make-instance 'jameson))
   (setf *timesteps* (create-trial projectiles-nb *timesteps-by-trial*))
   (collect-responses *timesteps-by-trial* visible))
 
@@ -43,7 +42,6 @@
 ;; The model is not reset between trials so that it can learn
 ;; A trial is defined as an experiment that lasts from the generation of the projectiles to the projectiles intersecting with Jameson's movement axis
 (defun jameson (n &key (visible nil) (projectiles-nb 1) (results-group-size 10))
-  (setf *jameson* (make-instance 'jameson))
   (setf *timesteps* nil)
   (dotimes (i n)
     (setf *timesteps* (append *timesteps* (create-trial projectiles-nb *timesteps-by-trial*))))

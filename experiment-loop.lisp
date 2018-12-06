@@ -26,30 +26,36 @@
 (defun show-model-results (results)
   (if (result-hit results)
     (mod-focus-fct `(state ,'results result ,"hit"))
-    (mod-focus-fct `(state ,'results result ,"no-hit"))))
+    (mod-focus-fct `(state ,'results result ,"not-hit"))))
 
-;; Function that runs the window handler until results for each timestep
-(defmethod rpm-window-key-event-handler ((win rpm-window) key)
-  (let* ((timestep (pop *timesteps*))
-         (timestep-time (/ (- (get-time *run-model*) *start-time*) 1000.0)))
+(defun handle-response (timestep action)
+  (let ((timestep-time (/ (- (get-time *run-model*) *start-time*) 1000.0)))
     (if (= (timestep-order-in-trial timestep) (1- *timesteps-by-trial*))
       (progn
         (setf *results*
               (append *results*
                       (list (make-result :hit (is-jameson-hit *jameson* (timestep-projectiles timestep))
                                          :time *trial-time*))))
-        (show-model-results (first (last *results*)))
         (setf *trial-time* 0)
-        (setf *jameson* (make-instance 'jameson)))
+        (show-model-results (first (last *results*)))
+        (run *max-response-time*))
       (progn
         (setf *trial-time* (+ *trial-time* timestep-time))
-        (move-jameson-on-decision *jameson* (string key))))
-    (when *timesteps*
-      (present-timestep (first *timesteps*)))))
+        (move-jameson-on-decision *jameson* action)))))
+
+;; Function that runs the window handler until results for each timestep
+(defmethod rpm-window-key-event-handler ((win rpm-window) key)
+  (handle-response (first *timesteps*) (string key)))
 
 ;; Function that allows the window handler to run until results have been collected for all timesteps
 (defun collect-responses (timestep-count visible)
   (setf *results* nil)
   (setf *trial-time* 0)
+  (setf *jameson* (make-instance 'jameson))
   (present-timestep (first *timesteps*) :new-window t :visible visible)
-  (run (* *max-response-time* timestep-count) :real-time visible))
+  (dotimes (i timestep-count)
+    (pop *timesteps*)
+    (when *timesteps*
+      (run *max-response-time* :real-time visible)
+      (setf *jameson* (make-instance 'jameson))
+      (present-timestep (first *timesteps*)))))
