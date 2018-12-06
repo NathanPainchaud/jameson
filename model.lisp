@@ -309,6 +309,7 @@
 ==>
     =goal>
       state                  start
+      action                 =action
     +manual>
       cmd                    press-key
       key                    =action
