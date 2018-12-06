@@ -13,14 +13,14 @@
 (chunk-type position pos-x pos-y)
 (chunk-type environment jameson-position oldest-position middle-position newest-position
 state jameson-encoded projectile-encoded)
-(chunk-type estimation dx dy y action)
+(chunk-type estimate dx dy y action)
 
 ;; Declarative memory initialization
 (add-dm
   (goal isa environment state start)
 	(start)
 	(attending) (encoding-jameson) (encoding-projectile) (take-action)
-	(estimating) (done))
+	(estimating) (retrieving) (done))
 
 ;; Environment perception productions
 
@@ -48,7 +48,6 @@ state jameson-encoded projectile-encoded)
 			pos-x							=x
 			pos-y							=y)
 
-
 ; Encodes the position where Jameson perceives himself
 (P encode-jameson
 		=goal>
@@ -74,10 +73,10 @@ state jameson-encoded projectile-encoded)
 		?imaginal>
 			buffer						full
 ==>
-   =goal>
-      state       retrieving
-      tracked        =letter
-)
+		=goal>
+			state							encoding-projectile
+		+visual-location>
+      :attended    			nil)
 
 ; Adds the position where Jameson perceives himself at
 (P add-position-jameson
@@ -188,94 +187,30 @@ state jameson-encoded projectile-encoded)
 		=goal>
 			isa         			environment
 			state							estimating
+			jameson-position			=j
+			middle-position				=p2
+			newest-position				=p3
 		?manual>
 			state							free
+			
+		
 ==>
 		!output!						"Estimating trajectory"
+		!bind!	=x3	(chunk-slot-value =p3 'pos-x)
+		
 		=goal>
 			state							nil
 			jameson-position	nil
+		+imaginal>
+			x =x3
 		+manual>
-  		cmd								press-key
-  		key								"s")
+			cmd								press-key
+			key								"s")
 
 ;; Information retireval productions
 ;; Not tested
 
-(P remmeber-situation
-    =goal>
-     ISA    goal
-     state     retrieving
-    =retireval>
-     ISA    estimation
-     action =act
-    ?manual>
-     state free
-   ==>
-    =goal>
-      state nil
-    +manual>
-     cmd press-key
-     key =act
-     
-    @retrieval>)
-
-(P cant-remember-up
-    =goal>
-      ISA goal
-      state retrieving
-    = y (+ pos-y dy)
-    <= dy 0
-    ?retrieval>
-      buffer failure
-    ?manual>
-      state free
-   ==>
-     =goal>
-       state nil
-     +manual>
-       cmd press-key
-       key "u")
-
-(P cant-remember-down
-    =goal>
-      ISA goal
-      state retrieving
-    = y (+ pos-y dy)
-    > dy 0
-    ?retrieval>
-      buffer failure
-    ?manual>
-      state free
-   ==>
-     =goal>
-       state nil
-     +manual>
-       cmd press-key
-       key "d")
-
-(P cant-remember-stay
-    =goal>
-      ISA goal
-      state retrieving
-      - y  (+ pos-y dy)
-    ?retrieval>
-      buffer failure
-    ?manual>
-      state free
-   ==>
-     =goal>
-       state nil
-     +manual>
-       cmd press-key
-       key "s")    
-=======
-		=goal>
-			state							encoding-projectile
-		+visual-location>
-      :attended    			nil)
-
-
+	
 (set-all-base-levels 100000 -1000)
 (goal-focus goal)
 )
