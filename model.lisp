@@ -12,15 +12,15 @@
 ;; Chunk types definitions
 (chunk-type position pos-x pos-y)
 (chunk-type estimate position direction action)
-(chunk-type env-perception
+(chunk-type environment
   jameson-position oldest-position middle-position newest-position
-  jameson-encoded projectile-encoded state)
-(chunk-type env-Learning
-  projectile-position projectile-direction state)
+  jameson-encoded projectile-encoded
+  projectile-position projectile-direction
+  state)
 
 ;; Declarative memory initialization
 (add-dm
-  (goal isa env-perception state start)
+  (goal isa environment state start)
   (start)
 
   ; Environment perception states
@@ -38,7 +38,7 @@
 ; and moves the attention of Jameson to the object
 (P attend-object
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  start
     =visual-location>
       screen-x               =x
@@ -61,7 +61,7 @@
 ; Encodes the position where Jameson perceives himself
 (P encode-jameson
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  attending
     =visual>
       value                  "J"
@@ -76,7 +76,7 @@
 ; Encodes the position of an attended projectile
 (P encode-projectile
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  attending
     =visual>
     - value                  "J"
@@ -91,7 +91,7 @@
 ; Adds the position where Jameson perceives himself at
 (P add-position-jameson
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  encoding-jameson
     ?imaginal>
       buffer                 full
@@ -106,7 +106,7 @@
 ; positions for the previous 2 or 3 timesteps are known
 (P add-position-full-trajectory
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  encoding-projectile
       middle-position        =middle-position
       newest-position        =newest-position
@@ -125,7 +125,7 @@
 ; position for previous timestep is known
 (P add-position-partial-trajectory
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  encoding-projectile
       middle-position        nil
       newest-position        =newest-position
@@ -143,7 +143,7 @@
 ; previous positions are known
 (P add-position-no-trajectory
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  encoding-projectile
       newest-position        nil
     ?imaginal>
@@ -159,7 +159,7 @@
 ; enough information to guess the behavior of the projectile
 (P cant-take-action
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  start
       jameson-encoded        done
       projectile-encoded     done
@@ -179,7 +179,7 @@
 ; to guess the behavior of the projectile
 (P can-take-action
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  start
       jameson-encoded        done
       projectile-encoded     done
@@ -203,7 +203,7 @@
 ; that should guide the decision about where to move next
 (P interpret-environment
     =goal>
-      isa                    env-perception
+      isa                    environment
       state                  estimating
       jameson-position       =j
       middle-position        =mp
@@ -220,8 +220,7 @@
                           ((> =np-y =mp-y) "down")
                           ((< =np-y =mp-y) "up"))
 ==>
-    +goal>
-      isa                    env-learning
+    =goal>
       state                  retrieving
       projectile-position    =position
       projectile-direction   =direction
@@ -231,33 +230,13 @@
       direction              =direction)
 
 
-;; Learning productions
-
-; Executes the action usually taken when in that
-; environment if the environment is known
-(P remember-environment
-    =goal>
-      isa                    env-learning
-      state                  retrieving
-    =retrieval>
-      isa                    estimate
-      action                 =action
-    ?manual>
-      state                  free
-   ==>
-    +goal>
-      isa                    env-perception
-      state                  start
-    +manual>
-      cmd                    press-key
-      key                    =action
-    @retrieval>)
+;; New environment heuristics productions
 
 ; Provides a heuristic for when it should be a good
 ; decision not to move, if the environment is not known
 (P cant-remember-stay
     =goal>
-      isa                    env-learning
+      isa                    environment
       state                  retrieving
     - projectile-position    "equal"
     - projectile-direction   "level"
@@ -266,8 +245,7 @@
     ?manual>
       state free
 ==>
-    +goal>
-      isa                    env-perception
+    =goal>
       state                  start
     +manual>
       cmd                    press-key
@@ -277,7 +255,7 @@
 ; decision to move up, if the environment is not known
 (P cant-remember-up
     =goal>
-      isa                    env-learning
+      isa                    environment
       state                  retrieving
     - projectile-position    "lower"
     - projectile-direction   "up"
@@ -286,8 +264,7 @@
     ?manual>
       state free
 ==>
-    +goal>
-      isa                    env-perception
+    =goal>
       state                  start
     +manual>
       cmd                    press-key
@@ -297,7 +274,7 @@
 ; decision to move down, if the environment is not known
 (P cant-remember-down
     =goal>
-      isa                    env-learning
+      isa                    environment
       state                  retrieving
     - projectile-position    "higher"
     - projectile-direction   "down"
@@ -306,16 +283,39 @@
     ?manual>
       state free
 ==>
-    +goal>
-      isa                    env-perception
+    =goal>
       state                  start
     +manual>
       cmd                    press-key
       key                    "d")
 
-;; TODO Initialize utilities for each action production
-;; TODO Trigger the reward at the end of a trial
 
-(set-all-base-levels 100000 -1000)
+;; Chunk retrieval learning productions
+
+; Executes the action usually taken when in that
+; environment if the environment is known
+(P remember-environment
+    =goal>
+      isa                    environment
+      state                  retrieving
+    =retrieval>
+      isa                    estimate
+      action                 =action
+    ?manual>
+      state                  free
+   ==>
+    =goal>
+      state                  start
+    +manual>
+      cmd                    press-key
+      key                    =action
+    @retrieval>)
+
+;; Initialize utilities for each action production
+(spp cant-remember-stay :u 10)
+(spp cant-remember-up :u 10)
+(spp cant-remember-down :u 10)
+
+;; TODO Trigger the reward at the end of a trial
 (goal-focus goal)
 )
