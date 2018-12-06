@@ -19,7 +19,7 @@
 ;;; Definition of custom data structures used by the program
 (defstruct timestep order-in-trial projectiles) ; Custom data structure to hold the information about the displa of a specific timestep in the experiment
 (defstruct result hit time)                     ; Custom data structure to hold the results compute for each trial (on the last timestep of each trial)
-(defstruct result-group start-trial end-trial hits time)  ; Custom data structure to hold the results of a group of trials (useful when displaying the results)
+(defstruct result-group start-trial end-trial hits mean-time)  ; Custom data structure to hold the results of a group of trials (useful when displaying the results)
 
 ;;; Load files for the program
 ;; For the files to load correctly, the Lisp environment's load path must be set to the directory of the project
