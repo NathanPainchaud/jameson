@@ -7,9 +7,9 @@
 (define-model jameson
 
 ;; Model parameters
-(sgp :v t :esc nil :show-focus t :trace-detail low
+(sgp :v t :esc t :show-focus t :trace-detail low
      :lf 0.4 :bll 0.5 :ans 0.5 :rt 0 :ncnar nil
-     :ult t)
+     :ult t :egs 3)
 (sgp-fct (list :ul *learning*))
 
 ;; Chunk types definitions
