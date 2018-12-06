@@ -39,8 +39,7 @@
                       (list (make-result :hit (is-jameson-hit *jameson* (timestep-projectiles timestep))
                                          :time *trial-time*))))
         (setf *trial-time* 0)
-        (show-model-results (first (last *results*)))
-        (run *max-response-time*))
+        (show-model-results (first (last *results*))))
       (progn
         (setf *trial-time* (+ *trial-time* timestep-time))
         (move-jameson-on-decision *jameson* action)))))
