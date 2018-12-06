@@ -257,7 +257,7 @@
     =goal>
       isa                    environment
       state                  retrieving
-    - projectile-position    "lower"
+    - projectile-position    "higher"
     - projectile-direction   "up"
     ?retrieval>
       buffer                 failure
@@ -276,7 +276,7 @@
     =goal>
       isa                    environment
       state                  retrieving
-    - projectile-position    "higher"
+    - projectile-position    "lower"
     - projectile-direction   "down"
     ?retrieval>
       buffer                 failure
