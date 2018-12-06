@@ -13,6 +13,9 @@
 (defvar *results*)    ; Variable that stores the results from the experiments
 (defvar *jameson*)    ; Variable that stores the object representing Jameson
 
+;;; Definition of variables used to parameterize the ACT-R model
+(defvar *learning* t)   ; Variables that indicates if the model should learn from trials
+
 ;;; Definition of custom data structures used by the program
 (defstruct timestep order-in-trial projectiles) ; Custom data structure to hold the information about the displa of a specific timestep in the experiment
 (defstruct result hit time)                     ; Custom data structure to hold the results compute for each trial (on the last timestep of each trial)

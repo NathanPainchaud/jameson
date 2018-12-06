@@ -7,11 +7,14 @@
 (define-model jameson
 
 ;; Model parameters
-(sgp :v t :esc nil :lf 0.4 :bll 0.5 :ans 0.5 :rt 0 :ncnar nil :show-focus t :trace-detail low)
+(sgp :v t :esc nil :show-focus t :trace-detail low
+     :lf 0.4 :bll 0.5 :ans 0.5 :rt 0 :ncnar nil
+     :ult t)
+(sgp-fct (list :ul *learning*))
 
 ;; Chunk types definitions
 (chunk-type position pos-x pos-y)
-(chunk-type estimate position direction action)
+(chunk-type estimate projectile-position projectile-direction action)
 (chunk-type environment
   jameson-position oldest-position middle-position newest-position
   jameson-encoded projectile-encoded
@@ -31,7 +34,7 @@
   (estimating)
   
   ; Learning states
-  (retrieving))
+  (retrieving) (results))
 
 ;; Environment perception productions
 
@@ -66,8 +69,6 @@
       state                  attending
     =visual>
       value                  "J"
-    ?imaginal>
-      buffer                 full
 ==>
     =goal>
       state                  encoding-jameson
@@ -81,8 +82,6 @@
       state                  attending
     =visual>
     - value                  "J"
-    ?imaginal>
-      buffer                 full
 ==>
     =goal>
       state                  encoding-projectile
@@ -174,7 +173,7 @@
     +manual>
       cmd                    press-key
       key                    "s"
-    +imaginal>)
+    -imaginal>)
 
 ; Allows the model to progress if it has enough information
 ; to guess the behavior of the projectile
@@ -190,7 +189,7 @@
       jameson-encoded        nil
       projectile-encoded     nil
       state                  estimating
-    +imaginal>)
+    -imaginal>)
 
 
 ;; Environment interpretation productions
@@ -227,8 +226,8 @@
       projectile-direction   =direction
     +retrieval>
       isa                    estimate
-      position               =position
-      direction              =direction)
+      projectile-position    =position
+      projectile-direction   =direction)
 
 
 ;; New environment heuristics productions
@@ -315,13 +314,15 @@
 
 ; Remembers the action taken if it lead to not being hit
 (P results-not-hit
-    =goal
-      isa
+    =goal>
+      isa                    environment
       state                  results
       projectile-position    =position
       projectile-direction   =direction
       action                 =action
       result                 "no-hit"
+    ?imaginal>
+       state                 free
 ==>
     +goal>
       isa                    environment
@@ -334,8 +335,8 @@
 
 ; Forgets the action taken if it lead to being hit
 (P results-hit
-    =goal
-      isa
+    =goal>
+      isa                    environment
       state                  results
       result                 "hit"
 ==>
