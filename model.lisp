@@ -16,7 +16,8 @@
   jameson-position oldest-position middle-position newest-position
   jameson-encoded projectile-encoded
   projectile-position projectile-direction
-  state)
+  action result state)
+
 
 ;; Declarative memory initialization
 (add-dm
@@ -303,19 +304,53 @@
       action                 =action
     ?manual>
       state                  free
-   ==>
+==>
     =goal>
       state                  start
+      action                 =action
     +manual>
       cmd                    press-key
       key                    =action
     @retrieval>)
+
+; Remembers the action taken if it lead to not being hit
+(P results-not-hit
+    =goal
+      isa
+      state                  results
+      projectile-position    =position
+      projectile-direction   =direction
+      action                 =action
+      result                 "no-hit"
+==>
+    +goal>
+      isa                    environment
+      state                  start
+    +imaginal>
+      isa                    estimate
+      projectile-position    =position
+      projectile-direction   =direction
+      action                 =action)
+
+; Forgets the action taken if it lead to being hit
+(P results-hit
+    =goal
+      isa
+      state                  results
+      result                 "hit"
+==>
+    +goal>
+      isa                    environment
+      state                  start)
+
+(goal-focus goal)
 
 ;; Initialize utilities for each action production
 (spp cant-remember-stay :u 10)
 (spp cant-remember-up :u 10)
 (spp cant-remember-down :u 10)
 
-;; TODO Trigger the reward at the end of a trial
-(goal-focus goal)
-)
+;; Trigger the reward at the end of a trial
+(when *learning*
+  (spp results-not-hit :reward 10)
+  (spp results-hit :reward 0)))
