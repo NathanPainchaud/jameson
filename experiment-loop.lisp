@@ -27,8 +27,8 @@
 ; Function that calls the model with the results of the trial to allow the model to learn from them
 (defun show-model-results (results)
   (if (result-hit results)
-    (mod-focus-fct `(state ,results result ,"hit"))
-    (mod-focus-fct `(state ,results result ,"no-hit"))))
+    (mod-focus-fct `(state ,'results result ,"hit"))
+    (mod-focus-fct `(state ,'results result ,"no-hit"))))
 
 ;; Function that runs the window handler until results for each timestep
 (defmethod rpm-window-key-event-handler ((win rpm-window) key)

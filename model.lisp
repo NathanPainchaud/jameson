@@ -247,6 +247,7 @@
 ==>
     =goal>
       state                  start
+      action                 "s"
     +manual>
       cmd                    press-key
       key                    "s")
@@ -266,6 +267,7 @@
 ==>
     =goal>
       state                  start
+      action                 "u"
     +manual>
       cmd                    press-key
       key                    "u")
@@ -285,6 +287,7 @@
 ==>
     =goal>
       state                  start
+      action                 "d"
     +manual>
       cmd                    press-key
       key                    "d")
@@ -306,7 +309,6 @@
 ==>
     =goal>
       state                  start
-      action                 =action
     +manual>
       cmd                    press-key
       key                    =action
@@ -345,6 +347,7 @@
       state                  start)
 
 (goal-focus goal)
+
 
 ;; Initialize utilities for each action production
 (spp cant-remember-stay :u 10)
