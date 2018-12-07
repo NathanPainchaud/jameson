@@ -9,8 +9,8 @@
 ;; Model parameters
 (sgp :v t :trace-detail low :show-focus t :ncnar nil
      :esc t :bll .5 :ol t :er t :lf 0
-     :ans 0.15 :mp 10.0 :rt 1
-     :ult nil :egs 3 :alpha .05)
+     :ans 0.15 :mp 20.0 :rt -10
+     :ult nil :egs 3 :alpha .2)
 (sgp-fct (list :ul *learning*))
 
 ;; Chunk types definitions
@@ -240,8 +240,6 @@
     =goal>
       isa                    environment
       state                  retrieving
-    - projectile-position    "equal"
-    - projectile-direction   "level"
     ?retrieval>
       buffer                 failure
     ?manual>
@@ -260,8 +258,6 @@
     =goal>
       isa                    environment
       state                  retrieving
-    - projectile-position    "higher"
-    - projectile-direction   "up"
     ?retrieval>
       buffer                 failure
     ?manual>
@@ -280,8 +276,6 @@
     =goal>
       isa                    environment
       state                  retrieving
-    - projectile-position    "lower"
-    - projectile-direction   "down"
     ?retrieval>
       buffer                 failure
     ?manual>
