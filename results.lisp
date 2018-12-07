@@ -10,7 +10,7 @@
               #\tab
               (result-group-mean-time group))))
 
-; Function that summarizes the results according to groups of trial
+; Function that summarizes the results by groups of trials
 (defun group-results (results results-group-size)
   (let ((grouped-results nil)
         (hits-in-trial-group 0)
