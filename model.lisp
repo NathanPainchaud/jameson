@@ -7,9 +7,10 @@
 (define-model jameson
 
 ;; Model parameters
-(sgp :v t :esc t :show-focus t :trace-detail low
-     :lf 0.4 :bll 0.5 :ans 0.5 :rt 0 :ncnar nil
-     :ult t :egs 3)
+(sgp :v t :trace-detail low :show-focus t :ncnar nil
+     :esc t :bll .5 :ol t :er t :lf 0
+     :ans 0.15 :mp 10.0 :rt 1
+     :ult nil :egs 3 :alpha .05)
 (sgp-fct (list :ul *learning*))
 
 ;; Chunk types definitions
@@ -35,6 +36,7 @@
   
   ; Learning states
   (retrieving) (results))
+
 
 ;; Environment perception productions
 
@@ -327,9 +329,7 @@
     ?imaginal>
        state                 free
 ==>
-    +goal>
-      isa                    environment
-      state                  start
+    @goal>
     +imaginal>
       isa                    estimate
       projectile-position    =position
@@ -343,12 +343,20 @@
       state                  results
       result                 "hit"
 ==>
+    @goal>)
+
+; Resets the goal buffer, after it was cleared explicitly to
+; avoid going into declarative memory
+(P reinitialize-goal
+    ?goal>
+      buffer                 empty
+==>
     +goal>
       isa                    environment
       state                  start)
 
-(goal-focus goal)
 
+(goal-focus goal)
 
 ;; Initialize utilities for each action production
 (spp cant-remember-stay :u 10)
@@ -358,4 +366,4 @@
 ;; Trigger the reward at the end of a trial
 (when *learning*
   (spp results-not-hit :reward 10)
-  (spp results-hit :reward 0)))
+  (spp results-hit :reward -10)))
