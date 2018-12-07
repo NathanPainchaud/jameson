@@ -7,10 +7,10 @@
 (define-model jameson
 
 ;; Model parameters
-(sgp :v t :trace-detail low :show-focus t :ncnar nil
-     :esc t :bll .5 :ol t :er t :lf 0
-     :ans 0.15 :mp 20.0 :rt -10
-     :ult nil :egs 3 :alpha .2)
+(sgp :v nil :trace-detail low :show-focus t :ncnar nil
+     :esc t :bll .5 :er t :lf 0.0
+     :ans .15 :mp 20.0 :rt -10.0
+     :ult t :egs 3.0 :alpha .2)
 (sgp-fct (list :ul *learning*))
 
 ;; Chunk types definitions
