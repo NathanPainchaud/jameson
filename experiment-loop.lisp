@@ -20,7 +20,8 @@
     (when new-window
       (install-device window))
 
-    (proc-display :clear t)
+    (unless (= (timestep-order-in-trial timestep) (1- *timesteps-by-trial*))
+      (proc-display :clear t))
 
     (setf *start-time* (get-time *run-model*))))
 
