@@ -9,8 +9,6 @@
 (defparameter *max-response-time* 10)
 
 ;;; Definition of global variables that are used by multiple functions in the program
-(defvar *timesteps*)  ; Variable that stores the information about the display for every timestep in the experiment
-(defvar *results*)    ; Variable that stores the results from the experiments
 (defvar *jameson*)    ; Variable that stores the object representing Jameson
 
 ;;; Definition of variables used to parameterize the ACT-R model
@@ -35,15 +33,17 @@
 ;; The model is not reset between trials so that it can learn
 ;; A trial is defined as an experiment that lasts from the generation of the projectiles to the projectiles intersecting with Jameson's movement axis
 (defun jameson-trial (&key (visible t) (projectiles-nb 1))
-  (setf *timesteps* (create-trial projectiles-nb *timesteps-by-trial*))
-  (collect-responses *timesteps-by-trial* visible))
+  (let* ((trial-timesteps (create-trial projectiles-nb *timesteps-by-trial*))
+         (trial-result (run-trial trial-timesteps visible)))
+    (analyze-results (list trial-result) 1)))
 
 ;; Function callable by a user of the model that runs a number of trials
 ;; The model is not reset between trials so that it can learn
 ;; A trial is defined as an experiment that lasts from the generation of the projectiles to the projectiles intersecting with Jameson's movement axis
 (defun jameson (n &key (visible nil) (projectiles-nb 1) (results-group-size 10))
-  (setf *timesteps* nil)
-  (dotimes (i n)
-    (setf *timesteps* (append *timesteps* (create-trial projectiles-nb *timesteps-by-trial*))))
-  (collect-responses (* *timesteps-by-trial* n) visible)
-  (analyze-results results-group-size))
+  (let ((experiment-results nil))
+    (dotimes (i n)
+      (let* ((trial-timesteps (create-trial projectiles-nb *timesteps-by-trial*))
+             (trial-result (run-trial trial-timesteps visible)))
+        (setf experiment-results (append experiment-results (list trial-result)))))
+    (analyze-results experiment-results results-group-size)))

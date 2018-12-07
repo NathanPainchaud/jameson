@@ -1,5 +1,7 @@
 (defvar *start-time*) ; Variable used to calculate the time taken by the model to take each decision
 (defvar *trial-time*) ; Variable that stores the total time taken by the model to take decisions during the trial
+(defvar *timesteps*)  ; Variable that stores the information about the display for every timestep in the trial
+(defvar *result*) ; Variable that stores the result for the trial
 
 (defparameter *run-model* t)
 
@@ -23,40 +25,38 @@
     (setf *start-time* (get-time *run-model*))))
 
 ;; Function that calls the model with the results of the trial to allow the model to learn from them
-(defun show-model-results (results)
+(defun show-model-trial-result (results)
   (if (result-hit results)
     (mod-focus-fct `(state ,'results result ,"hit"))
-    (mod-focus-fct `(state ,'results result ,"not-hit"))))
+    (mod-focus-fct `(state ,'results result ,"not-hit")))
+  (run *max-response-time*))
 
 ;; Function that updates the environment, the statistics and the model himself according
 ;; to the response of the model to a timestep
-(defun handle-response (timestep action)
+(defun handle-timestep-response (timestep action)
   (let ((timestep-time (/ (- (get-time *run-model*) *start-time*) 1000.0)))
-    (if (= (timestep-order-in-trial timestep) (1- *timesteps-by-trial*))
-      (progn
-        (setf *results*
-              (append *results*
-                      (list (make-result :hit (is-jameson-hit *jameson* (timestep-projectiles timestep))
-                                         :time *trial-time*))))
-        (setf *trial-time* 0)
-        (show-model-results (first (last *results*)))
-        (setf *jameson* (make-instance 'jameson)))
+    (if (cdr *timesteps*)
       (progn
         (setf *trial-time* (+ *trial-time* timestep-time))
-        (move-jameson-on-decision *jameson* action)))))
+        (move-jameson-on-decision *jameson* action))
+      (setf *result* (make-result :hit (is-jameson-hit *jameson*
+                                                       (timestep-projectiles timestep))
+                                  :time *trial-time*)))))
 
 ;; Function that runs the window handler until results for each timestep
 (defmethod rpm-window-key-event-handler ((win rpm-window) key)
-  (handle-response (first *timesteps*) (string key)))
+  (handle-timestep-response (first *timesteps*) (string key)))
 
 ;; Function that runs the model for each timestep to collect the responses of the model
-(defun collect-responses (timestep-count visible)
-  (setf *results* nil)
+(defun run-trial (trial-timesteps visible)
+  (setf *result* nil)
   (setf *trial-time* 0)
+  (setf *timesteps* trial-timesteps)
   (setf *jameson* (make-instance 'jameson))
   (present-timestep (first *timesteps*) :new-window t :visible visible)
-  (dotimes (i timestep-count)
+  (dotimes (i (1- *timesteps-by-trial*))
     (pop *timesteps*)
-    (when *timesteps*
-      (run *max-response-time* :real-time visible)
-      (present-timestep (first *timesteps*)))))
+    (run *max-response-time* :real-time visible)
+    (present-timestep (first *timesteps*)))
+  (show-model-trial-result *result*)
+  *result*)

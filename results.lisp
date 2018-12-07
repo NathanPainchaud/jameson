@@ -26,13 +26,13 @@
                   (= 0 (mod (1+ result-idx) results-group-size)))
           (let ((mean-time-for-trial-group (/ time-for-trial-group results-group-size)))
             (push (make-result-group :start-trial (1+ (* results-group-size (floor result-idx results-group-size)))
-                                    :end-trial (1+ result-idx)
-                                    :hits hits-in-trial-group
-                                    :mean-time mean-time-for-trial-group)
+                                     :end-trial (1+ result-idx)
+                                     :hits hits-in-trial-group
+                                     :mean-time mean-time-for-trial-group)
                   grouped-results))
           (setf hits-in-trial-group 0)
           (setf time-for-trial-group 0))))))
 
 ;; Function that computes the statistics about the performance of the model
-(defun analyze-results (results-group-size)
-  (print-analysis (group-results (reverse *results*) results-group-size)))
+(defun analyze-results (results results-group-size)
+  (print-analysis (group-results results results-group-size)))
